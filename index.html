@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Community Donations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #E8650A;
+    --saffron-light: #FFF0E6;
+    --saffron-mid: #F5832A;
+    --gold: #C9901F;
+    --gold-light: #FFF8E6;
+    --green: #1B7A4E;
+    --green-light: #E6F5EE;
+    --ink: #1A1210;
+    --ink-2: #4A3728;
+    --ink-3: #8A7060;
+    --surface: #FFFDF9;
+    --border: #EDE5D8;
+    --radius: 16px;
+    --font: 'Sora', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #E8650A 0%, #C9531A 100%);
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '🕉';
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.07;
+    top: -20px; right: -20px;
+  }
+  .header-org {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  /* ── Steps ── */
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 20px 0;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all .3s;
+  }
+  .step-dot.active { background: var(--saffron); width: 24px; border-radius: 4px; }
+  .step-dot.done { background: var(--green); }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 16px;
+    padding: 24px;
+    display: none;
+    animation: slideUp .3s ease;
+  }
+  .card.active { display: block; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 18px;
+    line-height: 1.3;
+  }
+
+  /* ── Form ── */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-2);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  input[type=text], input[type=tel], input[type=number], select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font);
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--surface);
+    outline: none;
+    transition: border .2s;
+    margin-bottom: 16px;
+  }
+  input:focus, select:focus { border-color: var(--saffron); }
+  input[readonly] { background: var(--saffron-light); color: var(--ink-2); }
+
+  /* ── Buttons ── */
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #E8650A, #C9531A);
+    color: #fff;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,101,10,0.35); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary {
+    background: var(--saffron-light);
+    color: var(--saffron);
+    margin-top: 10px;
+  }
+  .btn-green {
+    background: linear-gradient(135deg, #1B7A4E, #156040);
+    color: #fff;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 13px;
+    padding: 10px;
+    margin-top: 6px;
+  }
+
+  /* ── Event Card ── */
+  .event-item {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .event-item:hover { border-color: var(--saffron); background: var(--saffron-light); }
+  .event-item.selected { border-color: var(--saffron); background: var(--saffron-light); }
+  .event-name { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .event-desc { font-size: 13px; color: var(--ink-3); margin-bottom: 10px; }
+  .event-stats { display: flex; gap: 12px; }
+  .stat-pill {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .stat-pill span { font-weight: 600; color: var(--saffron); }
+
+  /* ── Progress bar ── */
+  .progress-wrap { background: var(--border); border-radius: 20px; height: 6px; margin: 8px 0; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--saffron), var(--gold)); transition: width 1s ease; }
+
+  /* ── Amount input ── */
+  .amount-wrap { position: relative; }
+  .amount-prefix {
+    position: absolute;
+    left: 16px; top: 50%; transform: translateY(-65%);
+    font-size: 18px; font-weight: 600; color: var(--ink-2);
+  }
+  .amount-wrap input { padding-left: 34px; font-size: 22px; font-weight: 600; margin-bottom: 0; }
+
+  /* ── Warning box ── */
+  .warning-box {
+    background: #FFF8E1;
+    border: 1px solid #FFCC02;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #7A5C00;
+    margin: 10px 0;
+    display: none;
+  }
+  .warning-box.show { display: block; }
+
+  /* ── Toggle ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .toggle-label { font-size: 14px; color: var(--ink-2); }
+  .toggle-label small { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .toggle {
+    position: relative;
+    width: 46px; height: 26px;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 26px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    left: 3px; top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--saffron); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* ── Donor info strip ── */
+  .donor-strip {
+    background: var(--saffron-light);
+    border: 1px solid #F5D0B0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .donor-avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--saffron), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: white; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .donor-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .donor-flat { font-size: 12px; color: var(--ink-3); margin-top: 1px; }
+
+  /* ── UPI section ── */
+  .upi-amount-display {
+    text-align: center;
+    padding: 24px 0 16px;
+  }
+  .upi-rs { font-size: 15px; color: var(--ink-3); }
+  .upi-num { font-size: 42px; font-weight: 600; color: var(--ink); line-height: 1; }
+  .upi-event { font-size: 13px; color: var(--ink-3); margin-top: 4px; }
+
+  .upi-apps { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+  .upi-app-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+  }
+  .upi-app-btn:hover { border-color: var(--saffron); background: var(--saffron-light); }
+  .upi-app-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  /* ── Success ── */
+  .success-icon {
+    width: 72px; height: 72px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 16px;
+  }
+  .announcement-box {
+    background: var(--gold-light);
+    border: 1px solid #F0D080;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    font-family: 'Noto Sans', sans-serif;
+    margin: 16px 0;
+  }
+
+  /* ── Spinner ── */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+  .text-sm { font-size: 13px; color: var(--ink-3); }
+  .mt-8 { margin-top: 8px; }
+  .mt-4 { margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Replace this with your deployed Apps Script URL -->
+<script>const API_URL = 'https://script.google.com/macros/s/AKfycbw81f4pykAWUnjh9Z7YZPKMiEu2oAVZgHn-oF1oAe5b-6dArMLzIOOUVwfso-dTw1P5iA/exec';</script>
+
+<div class="header">
+  <div class="header-org" id="headerOrg">Loading...</div>
+  <div class="header-title" id="headerTitle">Community Donations</div>
+</div>
+
+<div class="steps" id="stepDots">
+  <div class="step-dot active" id="dot0"></div>
+  <div class="step-dot" id="dot1"></div>
+  <div class="step-dot" id="dot2"></div>
+  <div class="step-dot" id="dot3"></div>
+</div>
+
+<!-- ── STEP 0: Mobile Lookup ── -->
+<div class="card active" id="step0">
+  <div class="card-label">Step 1 of 4</div>
+  <div class="card-title">Welcome! Enter your mobile number</div>
+  <label>Mobile Number</label>
+  <input type="tel" id="mobileInput" placeholder="10-digit mobile number" maxlength="10">
+  <button class="btn btn-primary" onclick="lookupMobile()">
+    Continue →
+  </button>
+</div>
+
+<!-- ── STEP 0b: New Member Registration ── -->
+<div class="card" id="step0b">
+  <div class="card-label">New member</div>
+  <div class="card-title">Tell us about yourself</div>
+  <p class="text-sm" style="margin-bottom:16px">Your number isn't in our records. Please enter your details.</p>
+  <label>Full Name</label>
+  <input type="text" id="regName" placeholder="Your full name">
+  <label>Tower / Block</label>
+  <input type="text" id="regTower" placeholder="e.g. A, B, Tower 3">
+  <label>Flat Number</label>
+  <input type="text" id="regFlat" placeholder="e.g. 402, B-204">
+  <button class="btn btn-primary" onclick="registerMember()">Save & Continue →</button>
+  <button class="btn btn-ghost" onclick="goBack('step0')">← Back</button>
+</div>
+
+<!-- ── STEP 1: Choose Event ── -->
+<div class="card" id="step1">
+  <div class="card-label">Step 2 of 4</div>
+  <div class="card-title">Choose an event to donate for</div>
+  <div id="eventsList"></div>
+  <button class="btn btn-primary" id="eventNextBtn" onclick="goToAmount()" disabled>Select an event first</button>
+</div>
+
+<!-- ── STEP 2: Amount & Preferences ── -->
+<div class="card" id="step2">
+  <div class="card-label">Step 3 of 4</div>
+  <div class="card-title">How much would you like to contribute?</div>
+
+  <div id="donorStrip" class="donor-strip">
+    <div class="donor-avatar" id="donorAvatar">?</div>
+    <div>
+      <div class="donor-name" id="donorNameDisplay">-</div>
+      <div class="donor-flat" id="donorFlatDisplay">-</div>
+    </div>
+  </div>
+
+  <label>Amount (₹)</label>
+  <div class="amount-wrap">
+    <span class="amount-prefix">₹</span>
+    <input type="number" id="amountInput" placeholder="0" min="1" oninput="checkAmount()">
+  </div>
+
+  <div class="warning-box" id="zeroWarning">
+    ⚠️ Did you add an extra zero? You're about to donate <strong id="zeroWarnAmount"></strong>. Please confirm this is correct.
+  </div>
+  <div class="warning-box" id="highestWarning" style="background:#E8F5E9;border-color:#81C784;color:#1B5E20">
+    🏆 You're about to become the <strong>highest donor</strong> for this event! Thank you for your generous contribution.
+  </div>
+
+  <div class="toggle-row">
+    <div class="toggle-label">
+      Stay anonymous
+      <small>Your name won't appear in the WhatsApp announcement</small>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="anonymousToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <button class="btn btn-primary mt-8" onclick="proceedToPayment()" id="amountNextBtn">Proceed to Payment →</button>
+  <button class="btn btn-ghost" onclick="goBack('step1')">← Back</button>
+</div>
+
+<!-- ── STEP 3: UPI Payment ── -->
+<div class="card" id="step3">
+  <div class="card-label">Step 4 of 4</div>
+  <div class="card-title">Complete your payment</div>
+
+  <div class="upi-amount-display">
+    <div class="upi-rs">You are donating</div>
+    <div class="upi-num" id="upiAmountDisplay">₹0</div>
+    <div class="upi-event" id="upiEventDisplay">-</div>
+  </div>
+
+  <p class="text-sm text-center" style="margin-bottom:12px">Choose your preferred UPI app:</p>
+  <div class="upi-apps">
+    <button class="upi-app-btn" onclick="openUPI('gpay')"><span class="upi-app-icon">🟢</span>GPay</button>
+    <button class="upi-app-btn" onclick="openUPI('phonepe')"><span class="upi-app-icon">🟣</span>PhonePe</button>
+    <button class="upi-app-btn" onclick="openUPI('paytm')"><span class="upi-app-icon">🔵</span>Paytm</button>
+    <button class="upi-app-btn" onclick="openUPI('bhim')"><span class="upi-app-icon">🟠</span>BHIM</button>
+    <button class="upi-app-btn" onclick="openUPI('any')"><span class="upi-app-icon">📱</span>Any App</button>
+  </div>
+
+  <div style="background:#E8F5E9;border:1px solid #A5D6A7;border-radius:10px;padding:14px;margin:12px 0;font-size:13px;color:#1B5E20;line-height:1.6">
+    <strong>After paying in your UPI app:</strong><br>
+    Come back to this screen and tap the button below.
+  </div>
+
+  <button class="btn btn-green" onclick="confirmPayment()">✓ I have completed the payment</button>
+  <button class="btn btn-ghost" onclick="goBack('step2')">← Go back</button>
+</div>
+
+<!-- ── STEP 4: Success ── -->
+<div class="card" id="step4">
+  <div class="success-icon">🙏</div>
+  <h2 style="text-align:center;font-size:20px;margin-bottom:6px">Thank you!</h2>
+  <p class="text-sm text-center" style="margin-bottom:16px" id="successMsg">Your donation has been recorded.</p>
+
+  <div class="announcement-box" id="announcementBox"></div>
+
+  <p class="text-sm text-center" style="margin-bottom:10px">Copy this message and share in your WhatsApp group:</p>
+  <button class="btn btn-primary" onclick="copyAnnouncement()">📋 Copy Announcement</button>
+  <button class="btn btn-secondary" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
+</div>
+
+<!-- ── Error / Loading ── -->
+<div class="card" id="loadingCard" style="text-align:center;padding:40px">
+  <div class="spinner" style="width:32px;height:32px;border-color:var(--saffron-light);border-top-color:var(--saffron);margin:0 auto 12px"></div>
+  <div class="text-sm" id="loadingMsg">Loading...</div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+const state = {
+  config: {},
+  member: null,
+  selectedEvent: null,
+  eventStats: null,
+  amount: 0,
+  anonymous: false,
+  donationId: null,
+  announcement: ''
+};
+
+// ── Init ──────────────────────────────────────────────────
+window.onload = async () => {
+  try {
+    showLoading('Loading...');
+    const config = await api('getConfig');
+    state.config = config;
+    document.getElementById('headerOrg').textContent = config.OrgName || 'Community';
+    document.getElementById('headerTitle').textContent = config.AppTitle || 'Community Donations';
+    document.title = config.OrgName || 'Community Donations';
+    hideLoading();
+    showStep('step0');
+  } catch(e) {
+    showLoading('Could not connect. Please check your internet and refresh.');
+  }
+};
+
+// ── API helper ─────────────────────────────────────────────
+async function api(action, params = {}) {
+  const url = new URL(API_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString());
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+// ── Step navigation ────────────────────────────────────────
+function showStep(stepId) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+  updateDots(stepId);
+}
+
+function updateDots(stepId) {
+  const map = { step0: 0, step0b: 0, step1: 1, step2: 2, step3: 3, step4: 3 };
+  const current = map[stepId] ?? 0;
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.className = 'step-dot' + (i < current ? ' done' : i === current ? ' active' : '');
+  }
+}
+
+function goBack(stepId) { showStep(stepId); }
+
+function showLoading(msg = 'Loading...') {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.getElementById('loadingMsg').textContent = msg;
+  document.getElementById('loadingCard').classList.add('active');
+}
+
+function hideLoading() {
+  document.getElementById('loadingCard').classList.remove('active');
+}
+
+// ── Step 0: Mobile lookup ──────────────────────────────────
+async function lookupMobile() {
+  const mobile = document.getElementById('mobileInput').value.trim().replace(/\D/g, '');
+  if (mobile.length !== 10) { alert('Please enter a valid 10-digit mobile number.'); return; }
+
+  showLoading('Looking you up...');
+  try {
+    const res = await api('lookupMember', { mobile });
+    if (res.found) {
+      state.member = res;
+      await loadEvents();
+    } else {
+      hideLoading();
+      showStep('step0b');
+    }
+  } catch(e) { alert('Error: ' + e.message); hideLoading(); showStep('step0'); }
+}
+
+// ── Step 0b: Register new member ───────────────────────────
+async function registerMember() {
+  const mobile = document.getElementById('mobileInput').value.trim().replace(/\D/g, '');
+  const name = document.getElementById('regName').value.trim();
+  const tower = document.getElementById('regTower').value.trim();
+  const flat = document.getElementById('regFlat').value.trim();
+  if (!name || !tower || !flat) { alert('Please fill all details.'); return; }
+
+  showLoading('Saving your details...');
+  try {
+    const res = await api('registerMember', { mobile, name, flat, tower });
+    state.member = res;
+    await loadEvents();
+  } catch(e) { alert('Error: ' + e.message); hideLoading(); showStep('step0b'); }
+}
+
+// ── Step 1: Load & show events ─────────────────────────────
+async function loadEvents() {
+  showLoading('Loading events...');
+  try {
+    const { events } = await api('getEvents');
+    const list = document.getElementById('eventsList');
+    list.innerHTML = '';
+
+    if (!events.length) {
+      list.innerHTML = '<p style="color:var(--ink-3);font-size:14px;text-align:center;padding:20px 0">No open events right now.</p>';
+      hideLoading();
+      showStep('step1');
+      return;
+    }
+
+    for (const ev of events) {
+      const stats = await api('getEventStats', { eventId: ev.id });
+      ev._stats = stats;
+      const pct = ev.targetAmount > 0 ? Math.min(100, Math.round(stats.total / ev.targetAmount * 100)) : 0;
+
+      const div = document.createElement('div');
+      div.className = 'event-item';
+      div.dataset.eventId = ev.id;
+      div.innerHTML = `
+        <div class="event-name">${ev.name}</div>
+        <div class="event-desc">${ev.description || ''}</div>
+        ${ev.targetAmount > 0 ? `
+          <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
+        ` : ''}
+        <div class="event-stats">
+          <div class="stat-pill">Collected <span>₹${stats.total.toLocaleString('en-IN')}</span></div>
+          <div class="stat-pill"><span>${stats.count}</span> contributors</div>
+          ${ev.targetAmount > 0 ? `<div class="stat-pill">Goal <span>₹${Number(ev.targetAmount).toLocaleString('en-IN')}</span></div>` : ''}
+        </div>
+      `;
+      div.onclick = () => selectEvent(ev, stats, div);
+      list.appendChild(div);
+    }
+    hideLoading();
+    showStep('step1');
+  } catch(e) { alert('Error loading events: ' + e.message); hideLoading(); }
+}
+
+function selectEvent(ev, stats, el) {
+  document.querySelectorAll('.event-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedEvent = ev;
+  state.eventStats = stats;
+  const btn = document.getElementById('eventNextBtn');
+  btn.disabled = false;
+  btn.textContent = `Donate to "${ev.name}" →`;
+}
+
+function goToAmount() {
+  if (!state.selectedEvent) return;
+  const m = state.member;
+  document.getElementById('donorAvatar').textContent = m.name.charAt(0).toUpperCase();
+  document.getElementById('donorNameDisplay').textContent = m.name;
+  document.getElementById('donorFlatDisplay').textContent = `${m.tower} – ${m.flat}`;
+  document.getElementById('amountInput').value = '';
+  document.getElementById('zeroWarning').classList.remove('show');
+  document.getElementById('highestWarning').classList.remove('show');
+  showStep('step2');
+}
+
+// ── Step 2: Amount checks ──────────────────────────────────
+function checkAmount() {
+  const amount = Number(document.getElementById('amountInput').value);
+  const stats = state.eventStats || {};
+
+  const zeroWarn = document.getElementById('zeroWarning');
+  const highWarn = document.getElementById('highestWarning');
+
+  // Extra zero check: ends in at least 3 zeros and is ≥ 5× average
+  const avg = stats.count > 0 ? stats.total / stats.count : 0;
+  const isExtraZero = amount >= 1000 && String(amount).endsWith('000') && avg > 0 && amount > avg * 5;
+  zeroWarn.classList.toggle('show', isExtraZero);
+  document.getElementById('zeroWarnAmount').textContent = '₹' + amount.toLocaleString('en-IN');
+
+  // Highest donor check
+  const isHighest = stats.maxDonation > 0 && amount > stats.maxDonation;
+  highWarn.classList.toggle('show', isHighest && !isExtraZero);
+}
+
+function proceedToPayment() {
+  const amount = Number(document.getElementById('amountInput').value);
+  if (!amount || amount < 1) { alert('Please enter a valid amount.'); return; }
+  state.amount = amount;
+  state.anonymous = document.getElementById('anonymousToggle').checked;
+
+  document.getElementById('upiAmountDisplay').textContent = '₹' + amount.toLocaleString('en-IN');
+  document.getElementById('upiEventDisplay').textContent = state.selectedEvent.name;
+  showStep('step3');
+}
+
+// ── Step 3: UPI deep-links ─────────────────────────────────
+function openUPI(app) {
+  const upiId = state.config.UpiId || '';
+  const name = encodeURIComponent(state.config.OrgName || 'Community');
+  const amount = state.amount;
+  const note = encodeURIComponent(state.selectedEvent.name);
+
+  const upiBase = `upi://pay?pa=${upiId}&pn=${name}&am=${amount}&tn=${note}&cu=INR`;
+
+  const deeplinks = {
+    gpay:    `tez://upi/pay?pa=${upiId}&pn=${name}&am=${amount}&tn=${note}&cu=INR`,
+    phonepe: `phonepe://pay?pa=${upiId}&pn=${name}&am=${amount}&tn=${note}&cu=INR`,
+    paytm:   `paytmmp://pay?pa=${upiId}&pn=${name}&am=${amount}&tn=${note}&cu=INR`,
+    bhim:    upiBase,
+    any:     upiBase
+  };
+
+  window.location.href = deeplinks[app] || upiBase;
+}
+
+// ── Step 4: Confirm payment & log ──────────────────────────
+async function confirmPayment() {
+  showLoading('Recording your donation...');
+  try {
+    const res = await api('logDonation', {
+      name: state.member.name,
+      mobile: state.member.mobile,
+      eventId: state.selectedEvent.id,
+      eventName: state.selectedEvent.name,
+      flat: state.member.flat,
+      tower: state.member.tower,
+      amount: state.amount,
+      anonymous: state.anonymous ? 'true' : 'false'
+    });
+
+    state.donationId = res.donationId;
+
+    const annRes = await api('getAnnouncement', { donationId: res.donationId });
+    state.announcement = annRes.message;
+
+    const isAnon = state.anonymous;
+    document.getElementById('successMsg').textContent =
+      `Your contribution of ₹${state.amount.toLocaleString('en-IN')} has been recorded. ${isAnon ? 'You chose to stay anonymous.' : ''}`;
+    document.getElementById('announcementBox').textContent = annRes.message;
+
+    hideLoading();
+    showStep('step4');
+  } catch(e) { alert('Error: ' + e.message); hideLoading(); showStep('step3'); }
+}
+
+// ── Announcement sharing ────────────────────────────────────
+function copyAnnouncement() {
+  navigator.clipboard.writeText(state.announcement).then(() => {
+    alert('Message copied! Paste it in your WhatsApp group.');
+  }).catch(() => {
+    prompt('Copy this message:', state.announcement);
+  });
+}
+
+function shareWhatsApp() {
+  const encoded = encodeURIComponent(state.announcement);
+  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+}
+</script>
+</body>
+</html>

@@ -224,7 +224,7 @@
 </div>
 
 <!-- Step 4: Personal thank-you -->
-<div class="card active" id="step4" style="display:none">
+<div class="card" id="step4">
   <div class="thankyou-card">
     <div class="thankyou-icon">🙏</div>
     <div class="thankyou-title">Thank you!</div>
@@ -270,7 +270,10 @@ window.onload = async () => {
 };
 
 function showStep(id) {
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.card').forEach(c => {
+    c.classList.remove('active');
+    c.style.display = '';
+  });
   document.getElementById(id).classList.add('active');
   const map = { step0: 0, step0b: 0, step1: 1, step2: 2, step3: 3, step4: 3 };
   const cur = map[id] ?? 0;
